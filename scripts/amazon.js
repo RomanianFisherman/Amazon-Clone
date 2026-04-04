@@ -1,3 +1,5 @@
+import {cart} from '../data/cart.js';
+import {products} from '../data/products.js';
 
 let productsHTML = '';
 
@@ -57,49 +59,67 @@ products.forEach((product) => { // good use of arrow function
 
 document.querySelector('.js-products-grid').innerHTML = productsHTML;
 
-const addedMessageTimeouts = {};
+function addToCart(productId) {
+    let matchingItem;
 
-document.querySelectorAll('.js-add-to-cart')
-  .forEach((button) => {
-    button.addEventListener('click', () => {
-      const productId = button.dataset.productId;
+    cart.forEach((cartItem) => {
+      if (productId === cartItem.productId) {
+        matchingItem = cartItem;
+      }
+    });
 
-      let matchingItem;
-
-      cart.forEach((item) => {
-        if (productId === item.productId) {
-          matchingItem = item;
-        }
-      });
-
-      const quantitySelector = document.querySelector(`.js-quantity-selector-${productId}`);
-      const quantity = Number(quantitySelector.value);
-
-      if (matchingItem) {
+    if (matchingItem) {
         matchingItem.quantity += quantity;
-      } else {
+    } else {
         cart.push({
           productId: productId,
           quantity: quantity
         });
-      }
+    }
+}
 
-      let cartQuantity = 0;
+function updateCartQuantity() {
+  let cartQuantity = 0;
       
-      cart.forEach((item) => {
-          cartQuantity += item.quantity;
-      });
+  cart.forEach((item) => {
+      cartQuantity += item.quantity;
+  });
         
-        document.querySelector('.js-cart-quantity')
-            .innerHTML = cartQuantity;
+  document.querySelector('.js-cart-quantity')
+      .innerHTML = cartQuantity;
         
-        const addedMessage = document.querySelector(`.js-added-to-cart-${productId}`);
-        addedMessage.classList.add('added-to-cart-visibility');
+}
+// we use a simpler solution with closure with a temporal variable
+//const addedMessageTimeouts = {};
 
-        const Added_Timeout = setTimeout( () => {
-            addedMessage.classList.remove('added-to-cart-visibility');
-        }, 2000);
+document.querySelectorAll('.js-add-to-cart')
+  .forEach((button) => {
 
+    let addedMessageTimeoutID;
+
+    button.addEventListener('click', () => {
+      const productId = button.dataset.productId;
+
+      const quantitySelector = document.querySelector(`.js-quantity-selector-${productId}`);
+      const quantity = Number(quantitySelector.value);
+
+      addToCart(productId);
+      updateCartQuantity();
+      
+      const addedMessage = document.querySelector(`.js-added-to-cart-${productId}`);
+      addedMessage.classList.add('added-to-cart-visibility');
+      if (addedMessageTimeoutID) { clearTimeout(addedMessageTimeoutID);}
+      // feature for added sentence  
+      /* const previousTimeoutID = addedMessageTimeouts[productId];
+      if (previousTimeoutID) {
+          clearTimeout(previousTimeoutID);
+      } */
+      const timeoutID = setTimeout( () => {
+          addedMessage.classList.remove('added-to-cart-visibility');
+      }, 2000);
+      addedMessageTimeoutID = timeoutID;
+      
+          //addedMessageTimeouts[productId] = timeoutID;
         
     });
     
