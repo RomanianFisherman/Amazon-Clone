@@ -1,5 +1,5 @@
-import {cart} from '../data/cart.js';
-import {products} from '../data/products.js';
+import { cart, addToCart } from '../data/cart.js';
+import { products } from '../data/products.js';
 
 let productsHTML = '';
 
@@ -59,30 +59,12 @@ products.forEach((product) => { // good use of arrow function
 
 document.querySelector('.js-products-grid').innerHTML = productsHTML;
 
-function addToCart(productId) {
-    let matchingItem;
-
-    cart.forEach((cartItem) => {
-      if (productId === cartItem.productId) {
-        matchingItem = cartItem;
-      }
-    });
-
-    if (matchingItem) {
-        matchingItem.quantity += quantity;
-    } else {
-        cart.push({
-          productId: productId,
-          quantity: quantity
-        });
-    }
-}
 
 function updateCartQuantity() {
   let cartQuantity = 0;
       
-  cart.forEach((item) => {
-      cartQuantity += item.quantity;
+  cart.forEach((cartItem) => {
+      cartQuantity += cartItem.quantity;
   });
         
   document.querySelector('.js-cart-quantity')
