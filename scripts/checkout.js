@@ -1,4 +1,4 @@
-import { cart,removeFromCart } from '../data/cart.js';
+import { cart,removeFromCart,calculateCartQuantity } from '../data/cart.js';
 import { products } from '../data/products.js';
 import { formatCurrency } from './utils/money.js';
 
@@ -36,8 +36,10 @@ cart.forEach((cartItem) => {
                 <span>
                 Quantity: <span class="quantity-label"> ${cartItem.quantity}</span>
                 </span>
-                <span class="update-quantity-link link-primary js-update-link">
+                <span class="update-quantity-link link-primary js-update-link ">
                 Update
+                <input class="quantity-input js-quantity-input">
+                <span class="save-quantity-link link-primary"> Save </span>
                 </span>
                 <span class="delete-quantity-link link-primary js-delete-link" data-product-id="${matchingProduct.id}">
                 Delete
@@ -109,19 +111,30 @@ document.querySelectorAll('.js-delete-link')
     
     
 function updateCartQuantity() {
-    let cartQuantity = 0;
-    
-    cart.forEach((cartItem) => {
-        cartQuantity += cartItem.quantity;
-    });
-    
-    document.querySelector('.js-return-to-home-link')
-        .innerHTML = `${cartQuantity} items`;
+    const cartQuantity = calculateCartQuantity();
+        
+    if (cartQuantity === 1) {
+        document.querySelector('.js-return-to-home-link')
+            .innerHTML = `${cartQuantity} item`;
+    } else {
+        document.querySelector('.js-return-to-home-link')
+            .innerHTML = `${cartQuantity} items`;
+    }
 }
 
 updateCartQuantity();   
 
-/* if (Number(cartQuantity) === 1) {
-} else {
-    document.querySelector('.js-return-to-home-link').innerHTML = `${cartQuantity} items`;
-} */
+document.querySelectorAll('.js-update-link')
+    .forEach((link) => {
+        link.addEventListener('click',() => {
+            const productId = link.dataset.productId;
+            console.log(productId);
+        });
+    });
+
+document.querySelectorAll(`.js-update-link`)
+    .forEach((link) => {
+        link.addEventListener('click',() => {
+            
+        });
+    });

@@ -16,7 +16,7 @@ export function saveToStorage() {
   localStorage.setItem('cart', JSON.stringify(cart)); // I need the string 
 }
 
-export function addToCart(productId) {
+export function addToCart(productId, quantity) {
     let matchingItem;
 
     cart.forEach((cartItem) => {
@@ -26,11 +26,11 @@ export function addToCart(productId) {
     });
 
     if (matchingItem) {
-        matchingItem.quantity += 1;
+        matchingItem.quantity += quantity;
     } else {
         cart.push({
           productId: productId,
-          quantity: 1
+          quantity: quantity
         });
     }
 
@@ -49,7 +49,7 @@ export function removeFromCart(productId) {
   const newCart = [];
 
   cart.forEach((cartItem) => {
-    if (cartItem !== productId) {
+    if (cartItem.productId !== productId) {
       newCart.push(cartItem);
     }
   });
@@ -59,3 +59,12 @@ export function removeFromCart(productId) {
   saveToStorage();
 }
 
+export function calculateCartQuantity() {
+  let cartQuantity = 0;
+      
+  cart.forEach((cartItem) => {
+      cartQuantity += cartItem.quantity;
+  });
+
+  return cartQuantity;
+}
