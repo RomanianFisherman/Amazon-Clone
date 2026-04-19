@@ -128,11 +128,7 @@ export function renderOrderSummary() {
                 const productID = link.dataset.productId; //.dataset takes all the attributes from the link
                 removeFromCart(productID);
 
-                const container = document.querySelector(`.js-cart-item-container-${productID}`);
-
-                container.remove();
-
-                updateCartQuantity();
+                renderOrderSummary();
 
                 renderPaymentSummary();
             });
